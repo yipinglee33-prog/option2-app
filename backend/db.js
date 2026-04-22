@@ -12,4 +12,18 @@ const pool = connectionString
     })
   : null;
 
-module.exports = pool;
+async function initDatabase() {
+  if (!pool) {
+    return;
+  }
+
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS notes (
+      id SERIAL PRIMARY KEY,
+      text TEXT NOT NULL,
+      created_at TIMESTAMP DEFAULT NOW()
+    )
+  `);
+}
+
+module.exports = { pool, initDatabase };
