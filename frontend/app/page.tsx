@@ -2,11 +2,19 @@
 
 import { useEffect, useState } from 'react';
 
+const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, '');
+
 export default function Home() {
-  const [message, setMessage] = useState('Loading...');
+  const [message, setMessage] = useState(
+    apiBaseUrl ? 'Loading...' : 'Missing NEXT_PUBLIC_API_URL'
+  );
 
   useEffect(() => {
-    fetch('https://option2-app-production.up.railway.app/api/hello')
+    if (!apiBaseUrl) {
+      return;
+    }
+
+    fetch(`${apiBaseUrl}/api/hello`)
       .then((res) => res.json())
       .then((data) => setMessage(data.message))
       .catch(() => setMessage('Failed to connect to backend'));
